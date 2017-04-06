@@ -140,13 +140,22 @@ def edge_detection_test():
 # FLASK UPLOADING IMAGE FROM SERVER
 #########################
 
-@app.route('/upload', methods=['GET', 'POST'])
-def start():
+@app.route('/type1', methods=['GET', 'POST'])
+def type1_start():
   image = request.files.get('image-file', '')
   img = ndimage.imread(image)
   height = len(img[:][:][:])
   width = len(img[0][:][:])
   return "done"
+
+@app.route('/type2', methods=['GET', 'POST'])
+def type2_start():
+  image = request.files.get('image-file', '')
+  img = ndimage.imread(image)
+  height = len(img[:][:][:])
+  width = len(img[0][:][:])
+  return "done"
+
 
 #########################
 # HTML TEMPLATE STUFF
