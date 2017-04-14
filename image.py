@@ -7,21 +7,21 @@ from flask import Flask
 from flask import request
 from flask import render_template
 from flask import send_from_directory
-from serial import Serial
 from collections import namedtuple
 import logging
 import numpy
 import time
-
+import serial
 # create word drawing type, andrews letters and pixel letters
 # be able to specify which marker color for letters and for line drawings
 # largest size is 450
 
 app = Flask(__name__)
 
-ser = 0
-loc = namedtuple("loc", "x3 x2 x1 x0 y3 y2 y1 y0 servo_num")
-locations = []
+
+
+
+
 
 #########################
 # SERVO INFO
@@ -39,63 +39,9 @@ locations = []
 # servo4
 # blue
 
-#########################
-# SERIAL
-#########################
-
-def test_90_loop():
-  start = time.time()
-  x = 0
-  for i in range(0,90000):
-    x += 1
-  end = time.time()
-  print (end - start)
-  return
 
 
-def init_serial():
-  global ser
-  ser = Serial(
-    port = '/dev/ttys000',
-    baudrate=57600,
-    parity=serial.PARITY_NONE,
-    stopbits=serial.STOPBITS_ONE,
-    bytesize=serial.EIGHTBITS
-  )
 
-def send_file(filename):
-  global ser
-  readline = lambda : iter(lambda:ser.read(1),"\n")
-  while "".join(readline()) != "<<send>>":
-     # waiting for client to request file
-     pass
-  ser.write(open(filename, "rb").read())
-  ser.write("\n<<end>>\n")
-
-def send_points():
-  global locations
-  global ser
-  readline = lambda : iter(lambda:ser.read(1),"\n")
-  while "".join(readline()) != "<<send>>":
-    # waiting
-    pass
-  for i in locations:
-    ser.write(str(i.x3))
-    ser.write(str(i.x2))
-    ser.write(str(i.x1))
-    ser.write(str(i.x0))
-    ser.write(str(i.y3))
-    ser.write(str(i.y2))
-    ser.write(str(i.y1))
-    ser.write(str(i.y0))
-    ser.write(str("0"))
-    ser.write(str("0"))
-    ser.write(str("0"))
-    ser.write(str(i.servo_num))
-    while "".join(readline()) != "<<send>>":
-      # waiting
-      pass
-  ser.write("\n<<end>>\n")
 
 
 #########################
@@ -107,6 +53,9 @@ bit_mask_index_2 = 0x0F00
 bit_mask_index_1 = 0x00F0
 bit_mask_index_0 = 0x000F
 
+loc = namedtuple("loc", "x3 x2 x1 x0 y3 y2 y1 y0 servo_num")
+locations = []
+
 # only prints black/white
 def print_pixels(img, height, width):
   for row in range(1,height):
@@ -116,6 +65,7 @@ def print_pixels(img, height, width):
       else:
         print "X",
     print " "
+  return
 
 # canny edge detection
 # for line drawing
@@ -167,6 +117,7 @@ def create_file_of_points(img, filename):
                 str(i.servo_num)
     text_file.write("%s" % to_write)
   text_file.close()
+  return
 
 # create array of points
 # to send over serial connection
@@ -188,6 +139,7 @@ def create_array_of_points_line(img, height, width, servo_num):
                 str(r3), str(r2), str(r1), str(r0), \
                 str(servo_num))
         locations.append(l)
+  return
 
 def sort():
   # sort the locations array
@@ -243,6 +195,10 @@ def create_array_of_points_color(img, height, width):
                 str(r3), str(r2), str(r1), str(r0), \
                 str(servo_num))
         locations.append(l)
+  return
+
+def create_array_of_alpha():
+  return
 
 def resize(img, height, width):
   if (width > 450):
@@ -252,12 +208,91 @@ def resize(img, height, width):
     img = misc.imresize(img, 450.0/height)
   return img
 
+
+
+
+
+#########################
+# SERIAL
+#########################
+
+ser = 0
+
+def test_90_loop():
+  start = time.time()
+  x = 0
+  for i in range(0,90000):
+    x += 1
+  end = time.time()
+  print (end - start)
+  return
+
+
+def init_serial():
+  global ser
+  ser = serial.Serial(
+               port = '/dev/tty.SLAB_USBtoUART',
+               baudrate= 57600,
+               parity= serial.PARITY_NONE,
+               stopbits= serial.STOPBITS_ONE,
+               bytesize= serial.EIGHTBITS
+               )
+  return
+
+def send_file(filename):
+  global ser
+  readline = lambda : iter(lambda:ser.read(1),"\n")
+  while "".join(readline()) != "<<send>>":
+    # waiting for client to request file
+    pass
+  ser.write(open(filename, "rb").read())
+  ser.write("\n<<end>>\n")
+  return
+
+def send_points():
+  global locations
+  global ser
+  readline = lambda : iter(lambda:ser.read(1),"\n")
+  while "".join(readline()) != "<<send>>":
+    # waiting
+    pass
+  for i in locations:
+    ser.write(str(i.x3))
+    ser.write(str(i.x2))
+    ser.write(str(i.x1))
+    ser.write(str(i.x0))
+    ser.write(str(i.y3))
+    ser.write(str(i.y2))
+    ser.write(str(i.y1))
+    ser.write(str(i.y0))
+    ser.write(str("0"))
+    ser.write(str("0"))
+    ser.write(str("0"))
+    ser.write(str(i.servo_num))
+    while "".join(readline()) != "<<send>>":
+      # waiting
+      pass
+  ser.write("\n<<end>>\n")
+  return
+
+def test_serial():
+  init_serial()
+  return
+
+
+
+#########################
+# DRAWING MODES
+#########################
+
+
 def type1(img, height, width):
   # line drawing
   init_serial()
   new_img = canny(img, width)
   create_array_of_points_line(new_img, height, width, 1) # always black line
   send_points()
+  return
 
 
 def type2(img, height, width):
@@ -267,11 +302,15 @@ def type2(img, height, width):
   create_array_of_points_color(new_img, height, width)
   locations = sort()
   send_points()
+  return
 
 def type3(words):
   # word drawing
   init_serial()
   create_array_of_alpha()
+  return
+
+
 
 
 
@@ -299,10 +338,13 @@ def type2_start():
   type2(img, height, width)
   return "done"
 
-@app.route()
+@app.route('/type3', methods=['GET', 'POST'])
 def type3_start():
   words = request.args['data']
   type3(words)
+  return "done"
+
+
 
 
 #########################
@@ -319,4 +361,6 @@ def favicon():
   return send_from_directory('Documents/EECS373/final_proj/images', 'test.png')
 
 if __name__ == '__main__':
-  app.run(debug=True)
+  test_serial()
+
+
