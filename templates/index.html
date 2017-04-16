@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="static/css/stylesheet.css">
+    <link rel="stylesheet" href="../static/css/stylesheet.css">
     <title>Input to Drawing Machine</title>
-    <script src="static/js/jquery.js"></script>
-    <script src="static/js/script.js"></script>
+    <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/script.js"></script>
   </head>
   <body>
-    <form onsubmit="get_input();" id="upload" method="post" enctype="multipart/form-data">
-    <input id="img" type="file" name="image-file">
-    <br><br>
-    <input id="draw_type1" type="checkbox" name="type1_check">
-    line drawing
-    <br><br>
-    <input id="draw_type2" type="checkbox" name="type2_check">
-    dot drawing
-    <br><br>
-    <input id="draw_type3" type='checkbox' name="type3_check">
-    words drawing
-    <br>
-    <input id="draw_type3_word" type="text" name="type3_word">
-    words to draw
-    <br>
-    <input type="submit">
-    </form>
+    <div id="markers">
+      <div id="white_marker"></div>
+      <div id="black_marker"></div>
+      <div id="red_marker"></div>
+      <div id="green_marker"></div>
+      <div id="blue_marker"></div>
+    </div>
+    
+    <div id="canvas">
     
     
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    </div>
   </body>
 </html>

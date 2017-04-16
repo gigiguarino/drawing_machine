@@ -70,10 +70,14 @@ def print_location(l):
   print "[" + str(l.x3) + str(l.x2) + str(l.x1) + str(l.x0) \
     + "," + str(l.y3) + str(l.y2) + str(l.y1) + str(l.y0) + "]"
 
+# takes in a location and outputs the number
+# that corresponds to the x value strings
 def convert_to_x(l):
   num_str = l.x3 + l.x2 + l.x1 + l.x0
   return int(num_str)
 
+# takes in a location and outputs the number that
+# corresponds to the y value strings
 def convert_to_y(l):
   num_str = l.y3 + l.y2 + l.y1 + l.y0
   return int(num_str)
@@ -95,6 +99,7 @@ def canny(img, width):
   img = misc.imresize(img, 300.0/width)
   return feature.canny(img, sigma=3)
 
+# whack
 def sobel(img):
   img_sx = ndimage.sobel(img, axis=0, mode='constant')
   img_sy = ndimage.sobel(img, axis=1, mode='constant')
@@ -630,59 +635,19 @@ def type1(img, height, width, servo_num, resize):
   return
 
 
-def type2(img, height, width, resize):
-  # dot drawing
-  if (resize):
-    new_img = resize(img)
-    create_array_of_points_color(new_img, height, width)
-  else:
-    create_array_of_points_color(new_img, height, width)
-  send_points()
-  locations = sort()
-  send_points()
-  return
-
-def type3(words):
-  # word drawing
-  init_serial()
-  create_array_of_alpha(words)
-  return
-
-
-
-
-
 
 #########################
 # FLASK UPLOADING IMAGE FROM SERVER
 #########################
 
-@app.route('/type1', methods=['GET', 'POST'])
-# line drawing
-def type1_start():
-  image = request.files.get('image-file', '')
-  img = ndimage.imread(image)
-  height = len(img[:][:][:])
-  width = len(img[0][:][:])
-  type1(img, height, width, 0)
-  return "done"
+@app.route('/start', methods=['GET', 'POST'])
+def start():
+  # read from file called points.txt
+  # to get the points and different colors
+  height = 200
+  width = 200
+  
 
-@app.route('/type2', methods=['GET', 'POST'])
-# dot drawing
-def type2_start():
-  image = request.files.get('image-file', '')
-  img = ndimage.imread(image)
-  height = len(img[:][:][:])
-  width = len(img[0][:][:])
-  type2(img, height, width, 0)
-  return "done"
-
-@app.route('/type3', methods=['GET', 'POST'])
-# word drawing
-def type3_start():
-  words = request.args['data']
-  type3(words)
-  return "done"
 
 
 

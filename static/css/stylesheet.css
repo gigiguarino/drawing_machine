@@ -1,0 +1,65 @@
+
+
+#markers {
+  display: block;
+  background-color: green;
+  width: 600px;
+  height: 20px;
+}
+
+#canvas {
+  display: block;
+  background-color: black;
+  width: 600px;
+  height: 600px;
+}
+
+#white_marker {
+  display: block;
+  background-color: white;
+  border-style: solid;
+  border-color: black;
+  border-width: 5px;
+}
+
+#black_marker {
+  display: block;
+  background-color: black;
+  border-style: solid;
+  border-color: black;
+  border-width: 5px;
+}
+
+#red_marker {
+  display: block;
+  background-color: red;
+  border-style: solid;
+  border-color: black;
+  border-width: 5px;
+}
+
+#green_marker {
+  display: block;
+  background-color: green;
+  border-style: solid;
+  border-color: black;
+  border-width: 5px;
+}
+
+#blue_marker {
+  display: block;
+  background-color: blue;
+  border-style: solid;
+  border-color: black;
+  border-width: 5px;
+}
+
+.pixel {
+  display: block;
+  background-color: white;
+  border-style: solid;
+  border-color: grey;
+  border-width: 0.5px;
+  width: 2px;
+  height: 2px;
+}
