@@ -1,65 +1,89 @@
 
-
 #markers {
   display: block;
-  background-color: green;
+  position: fixed;
+  background-color: #ffffff;
   width: 600px;
-  height: 20px;
+  height: 80px;
+  top: 40px;
 }
 
 #canvas {
   display: block;
-  background-color: black;
+  position: fixed;
+  background-color: #ffffff;
   width: 600px;
   height: 600px;
+  bottom: 30px;
+  border-style: solid;
+  border-color: black;
+  border-width: 5px;
 }
 
 #white_marker {
-  display: block;
-  background-color: white;
+  display: inline-block;
+  background-color: #ffffff;
   border-style: solid;
   border-color: black;
   border-width: 5px;
+  width: 70px;
+  height: 70px;
 }
 
 #black_marker {
-  display: block;
-  background-color: black;
+  display: inline-block;
+  background-color: #000000;
   border-style: solid;
   border-color: black;
   border-width: 5px;
+  width: 70px;
+  height: 70px;
 }
 
 #red_marker {
-  display: block;
-  background-color: red;
+  display: inline-block;
+  background-color: #ce1010;
   border-style: solid;
   border-color: black;
   border-width: 5px;
+  width: 70px;
+  height: 70px;
 }
 
 #green_marker {
-  display: block;
-  background-color: green;
+  display: inline-block;
+  background-color: #008316;
   border-style: solid;
   border-color: black;
   border-width: 5px;
+  width: 70px;
+  height: 70px;
 }
 
 #blue_marker {
-  display: block;
-  background-color: blue;
+  display: inline-block;
+  background-color: #292ba7;
   border-style: solid;
   border-color: black;
   border-width: 5px;
+  width: 70px;
+  height: 70px;
+}
+
+.gap {
+  display: inline-block;
+  background-color: #ffffff;
+  width: 41px;
+  height: 80px;
 }
 
 .pixel {
-  display: block;
-  background-color: white;
+  display: inline-block;
+  margin: none;
+  background-color: #ffffff;
   border-style: solid;
   border-color: grey;
-  border-width: 0.5px;
+  border-width: 0.4px;
   width: 2px;
   height: 2px;
 }

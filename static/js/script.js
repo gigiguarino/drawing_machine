@@ -61,7 +61,21 @@ function send_array_values() {
 }
 
 function paint(color) {
-  $(this).css("background-color", color);
+  if (color == "white") {
+    $(this).css("background-color", "#ffffff");
+  }
+  else if (color == "black") {
+    $(this).css("background-color", "#000000");
+  }
+  else if (color == "red") {
+    $(this).css("background-color", "#ce1010");
+  }
+  else if (color == "green") {
+    $(this).css("background-color", "#008316");
+  }
+  else if (color == "blue") {
+    $(this).css("background-color", "#292ba7");
+  }
 }
 
 function end_paint() {
