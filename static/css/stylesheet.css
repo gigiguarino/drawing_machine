@@ -1,16 +1,17 @@
 
 #markers {
-  display: block;
   position: fixed;
   background-color: #ffffff;
   width: 600px;
   height: 80px;
-  top: 40px;
+  top: 50px;
+  left: 35px;
+  pointer-events: none;
 }
 
 #canvas {
-  display: block;
   position: fixed;
+  line-height: 0;
   background-color: #ffffff;
   width: 600px;
   height: 600px;
@@ -18,10 +19,13 @@
   border-style: solid;
   border-color: black;
   border-width: 5px;
+  left: 35px;
+  pointer-events: none;
 }
 
 #white_marker {
   display: inline-block;
+  pointer-events: auto;
   background-color: #ffffff;
   border-style: solid;
   border-color: black;
@@ -30,8 +34,13 @@
   height: 70px;
 }
 
+#white_marker:hover {
+  background-color: #cccccc;
+}
+
 #black_marker {
   display: inline-block;
+  pointer-events: auto;
   background-color: #000000;
   border-style: solid;
   border-color: black;
@@ -40,8 +49,13 @@
   height: 70px;
 }
 
+#black_marker:hover {
+  background-color: #363636;
+}
+
 #red_marker {
   display: inline-block;
+  pointer-events: auto;
   background-color: #ce1010;
   border-style: solid;
   border-color: black;
@@ -50,8 +64,13 @@
   height: 70px;
 }
 
+#red_marker:hover {
+  background-color: #c14848;
+}
+
 #green_marker {
   display: inline-block;
+  pointer-events: auto;
   background-color: #008316;
   border-style: solid;
   border-color: black;
@@ -60,14 +79,23 @@
   height: 70px;
 }
 
+#green_marker:hover {
+  background-color: #4da931;
+}
+
 #blue_marker {
   display: inline-block;
+  pointer-events: auto;
   background-color: #292ba7;
   border-style: solid;
   border-color: black;
   border-width: 5px;
   width: 70px;
   height: 70px;
+}
+
+#blue_marker:hover {
+  background-color: #535ac3;
 }
 
 .gap {
@@ -79,11 +107,63 @@
 
 .pixel {
   display: inline-block;
-  margin: none;
+  vertical-align: top;
+  outline: none;
+  margin: 0px;
   background-color: #ffffff;
-  border-style: solid;
-  border-color: grey;
-  border-width: 0.4px;
-  width: 2px;
-  height: 2px;
+  width: 6px;
+  height: 6px;
+  pointer-events: auto;
 }
+
+#buttons {
+  display: block;
+  position: fixed;
+  width: 200px;
+  height: 200px;
+  bottom: 30px;
+  right: 35px;
+  pointer-events: none;
+}
+
+#clear {
+  display: block;
+  width: 190px;
+  height: 70px;
+  pointer-events: auto;
+  border-style: solid;
+  border-color: black;
+  margin-bottom: 40px;
+  border-width: 5px;
+  background-color: #606060;
+  color: #ffffff;
+  font-family: monospace;
+  font-style: bold;
+  font-size: 52px;
+  text-align: center;
+}
+
+#clear:hover {
+  background-color: #8d8d8d;
+}
+
+#send {
+  width: 190px;
+  height: 70px;
+  pointer-events: auto;
+  border-style: solid;
+  border-color: black;
+  border-width: 5px;
+  background-color: #606060;
+  color: #ffffff;
+  font-family: monospace;
+  font-style: bold;
+  font-size: 52px;
+  text-align: center;
+}
+
+#send:hover {
+  background-color: #8d8d8d;
+}
+
+

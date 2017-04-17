@@ -1,7 +1,33 @@
+var color;
 
-function make_ajax(data) {
-  $.ajax
-  ({
+$(document).ready(function(){
+  color = "white";
+  $(".pixel").on("mousedown", start_paint);
+  $("#white_marker").on("click", function(){
+    color = "white";
+  });
+  $("#black_marker").on("click", function(){
+    color = "black";
+  });
+  $("#red_marker").on("click", function(){
+    color = "red";
+  });
+  $("#green_marker").on("click", function(){
+    color = "green";
+  });
+  $("#blue_marker").on("click", function(){
+    color = "blue";
+  });
+});
+
+
+function new_drawing(){
+  $(".pixel").on("mousedown", start_paint);
+  color = "white";
+}
+
+function make_ajax(){
+  $.ajax({
     type: "POST",
     url: "savedata.php",
     data: data,
@@ -12,7 +38,7 @@ function make_ajax(data) {
         type: "POST",
         data: 0,
         error: function (data) {
-          console.log('error');
+          console.log("error");
         }
       });
     }
@@ -20,14 +46,15 @@ function make_ajax(data) {
 }
 
 function send_array_values() {
+  $(".pixel").off("mousedown", start_paint);
   var data = ""
-  $('.pixel').each(function(){
+  $(".pixel").each(function(){
     // black = 1
     // red = 2
     // green = 3
     // blue = 4
-    var x = this.data('x');
-    var y = this.data('y');
+    var x = this.data("x");
+    var y = this.data("y");
     if (this.style.background-color == "black"){
       data += toString(x);
       data += " ";
@@ -60,7 +87,7 @@ function send_array_values() {
   make_ajax(data);
 }
 
-function paint(color) {
+function paint() {
   if (color == "white") {
     $(this).css("background-color", "#ffffff");
   }
@@ -79,39 +106,12 @@ function paint(color) {
 }
 
 function end_paint() {
-  $('.pixel').off(mouseover);
-  $('.pixel').off(mouseup);
+  $(".pixel").off("mouseover", paint);
+  $(".pixel").off("mouseup", end_paint);
 }
 
-function start_paint(color) {
-  $('.pixel').on(mouseover, paint(color));
-  $('.pixel').on(mouseup, end_paint());
+function start_paint() {
+  $(".pixel").on("mouseover", paint);
+  $(".pixel").on("mouseup", end_paint);
 }
-
-$('#white_marker').click(function(){
-  $('.pixel').off(mousedown);
-  $('.pixel').on(mousedown, start_paint("white"));
-});
-
-$('#black_marker').click(function(){
-  $('.pixel').off(mousedown);
-  $('.pixel').on(mousedown, start_paint("black"));
-});
-
-$('#red_marker').click(function(){
-  $('.pixel').off(mousedown);
-  $('.pixel').on(mousedown, start_paint("red"));
-});
-
-$('#green_marker').click(function(){
-  $('.pixel').off(mousedown);
-  $('.pixel').on(mousedown, start_paint("green"));
-});
-
-$('#blue_marker').click(function(){
-  $('.pixel').off(mousedown);
-  $('.pixel').on(mousedown, start_paint("blue"));
-});
-
-
 
