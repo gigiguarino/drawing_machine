@@ -148,7 +148,6 @@ def is_jump(x0, y0, x1, y1):
   y0 = int(y0)
   x1 = int(x1)
   y1 = int(y1)
-  sys.stdout.flush()
   if (((x0 - x1) == (y0 - y1)) and ((x0 - x1) > 0)):
     return 0
   elif (((x0 - x1) == (y0 - y1)) and ((x0 - x1) < 0)):
@@ -233,26 +232,52 @@ def is_line(curr_x, curr_y, next_x, next_y, prev_x, prev_y):
       return 1
     if (next_y == curr_y - 1 and prev_y == curr_y + 1):
       return 1
-    else
+    else:
       return 0
   if (curr_y == next_y and curr_y == prev_y):
     if (next_x == curr_x + 1 and prev_x == curr_x - 1):
       return 1
     if (next_x == curr_x - 1 and prev_x == curr_x + 1):
       return 1
-    else
+    else:
       return 0
-  else
+  else:
     return 0
 
 # returns true if its a connected straight diagonal
 def is_diagonal(curr_x, curr_y, next_x, next_y, prev_x, prev_y):
-  return 0
+  if (curr_x == prev_x + 1 and curr_x == next_x - 1):
+    if (curr_y == prev_y - 1 and curr_y == next_y + 1):
+      return 1
+    if (curr_y == prev_y + 1 and curr_y == next_y - 1):
+      return 1
+    else:
+      return 0
+  if (curr_x == prev_x - 1 and curr_x == next_x + 1):
+    if (curr_y == prev_y - 1 and curr_y == next_y + 1):
+      return 1
+    if (curr_y == prev_y + 1 and curr_y == next_y - 1):
+      return 1
+    else:
+      return 0
+  else:
+    return 0
 
+# removes the indices specified
+def remove_locs(locs, this_locations):
+  for l in locs:
+    for t in this_locations:
+      if (l == t):
+        this_locations.remove(t);
+        break
+  return this_locations
 
 # removes lines and diagonals so they use less movements
 def remove_unnecessary_moves(this_locations):
   prev_servo = 0
+  prev_x = 0
+  prev_y = 0
+  to_remove = []
   for i in range(0, len(this_locations) - 1):
     curr_x = convert_to_x(this_locations[i])
     curr_y = convert_to_y(this_locations[i])
@@ -264,11 +289,12 @@ def remove_unnecessary_moves(this_locations):
       if (is_diagonal(curr_x, curr_y, next_x, next_y, prev_x, prev_y) or
           is_line(curr_x, curr_y, next_x, next_y, prev_x, prev_y)):
         # remove i from this_locations
-        this_locations.remove(i)
-        break
+        to_remove.append(this_locations[i])
     prev_x = curr_x
     prev_y = curr_y
     prev_servo = curr_servo
+  this_locations = remove_locs(to_remove, this_locations)
+  return this_locations
 
 
 # concatenates the lines into one array
@@ -312,7 +338,10 @@ def create_array_of_points_line(plot_points, height, width, servo_num):
   x_array = get_x(plot_points)
   y_array = get_y(plot_points)
   lines = nearest_neighbor(x_array, y_array)
-  points = make_one_array(lines)
+  if (len(lines) > 1):
+    points = make_one_array(lines)
+  else:
+    points = lines[0]
   # add to locations list
   for l in range(0, len(points)):
     x = int(points[l][0])
@@ -482,15 +511,19 @@ def draw(data_string, height, width):
   if (len(black_points) > 0):
     black_loc = create_array_of_points_line(black_points, height, width, 1)
     black_loc = add_jumps(black_loc)
+    black_loc = remove_unnecessary_moves(black_loc)
   if (len(red_points) > 0):
     red_loc = create_array_of_points_line(red_points, height, width, 2)
     red_loc = add_jumps(red_loc)
+    red_loc = remove_unnecessary_moves(red_loc)
   if (len(green_points) > 0):
     green_loc = create_array_of_points_line(green_points, height, width, 3)
     green_loc = add_jumps(green_loc)
+    green_loc = remove_unnecessary_moves(green_loc)
   if (len(blue_points) > 0):
     blue_loc = create_array_of_points_line(blue_points, height, width, 4)
     blue_loc = add_jumps(blue_loc)
+    blue_loc = remove_unnecessary_moves(blue_loc)
   combine_locations(black_loc, red_loc, green_loc, blue_loc)
   make_locations_bigger()
   print_locations(locations)
@@ -516,6 +549,8 @@ def start():
   sys.stdout.write("inside python...")
   sys.stdout.flush()
   data = request.get_data()
+  #sys.stdout.write(data)
+  #sys.stdout.flush()
   height = 100
   width = 100
   sys.stdout.write("starting image processing...")
