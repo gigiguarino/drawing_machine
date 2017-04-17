@@ -3,6 +3,8 @@ var color;
 $(document).ready(function(){
   color = "white";
   $(".pixel").on("mousedown", start_paint);
+  $("#clear").on("click", new_drawing);
+  $("#send").on("click", send_array_values);
   $("#white_marker").on("click", function(){
     color = "white";
   });
@@ -23,24 +25,19 @@ $(document).ready(function(){
 
 function new_drawing(){
   $(".pixel").on("mousedown", start_paint);
-  color = "white";
+  $(".pixel").each(function(){
+    $(this).css("background-color", "#ffffff");
+  });
 }
 
-function make_ajax(){
+function make_ajax(data_string){
   $.ajax({
     type: "POST",
-    url: "savedata.php",
-    data: data,
+    url: "/start",
+    data: data_string,
     cache: false,
     success: function(){
-      $.ajax({
-        url: "/start",
-        type: "POST",
-        data: 0,
-        error: function (data) {
-          console.log("error");
-        }
-      });
+      console.log("successfully sent");
     }
   });
 }
@@ -53,33 +50,33 @@ function send_array_values() {
     // red = 2
     // green = 3
     // blue = 4
-    var x = this.data("x");
-    var y = this.data("y");
-    if (this.style.background-color == "black"){
-      data += toString(x);
+    var x = $(this).data("x");
+    var y = $(this).data("y");
+    if ($(this).css("background-color") == "rgb(0, 0, 0)"){
+      data += x;
       data += " ";
-      data += toString(y);
+      data += y;
       data += " ";
       data += "1\n";
     }
-    else if (this.style.background-color == "red"){
-      data += toString(x);
+    else if ($(this).css("background-color") == "rgb(206, 16, 16)"){
+      data += x;
       data += " ";
-      data += toString(y);
+      data += y;
       data += " ";
       data += "2\n";
     }
-    else if (this.style.background-color == "green"){
-      data += toString(x);
+    else if ($(this).css("background-color") == "rgb(0, 131, 22)"){
+      data += x;
       data += " ";
-      data += toString(y);
+      data += y;
       data += " ";
       data += "3\n";
     }
-    else if (this.style.background-color == "blue"){
-      data += toString(x);
+    else if ($(this).css("background-color") == "rgb(41, 43, 167)"){
+      data += x;
       data += " ";
-      data += toString(y);
+      data += y;
       data += " ";
       data += "4\n";
     }
