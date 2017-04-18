@@ -106,6 +106,19 @@ def get_points(data, servo_num):
       points.append(point)
   return points
 
+# new get points function
+def get_points2(data):
+  lines = data.splitlines()
+  points = []
+  for line in lines:
+    point = []
+    vars = line.split()
+    point.append(vars[0])
+    point.append(vars[1])
+    point.append(vars[2])
+    points.append(point)
+  return points
+
 
 # returns x values of the points in the array
 def get_x(points):
@@ -388,6 +401,58 @@ def create_array_of_points_line(plot_points, height, width, servo_num):
     this_locations.append(l1)
   return this_locations
 
+def create_array_of_points_line2(plot_points, height, width):
+  this_locations = []
+  # nearest neighbor calculation
+  x_array = get_x(plot_points)
+  y_array = get_y(plot_points)
+  lines = nearest_neighbor(x_array, y_array)
+  if (len(lines) > 1):
+    points = make_one_array(lines)
+  else:
+    points = lines[0]
+  points = plot_points  #######################
+  # add to locations list
+  for l in range(0, len(points)):
+    x = int(points[l][0])
+    y = int(points[l][1])
+    servo_num = int(points[l][2])
+    if (x >= 100):
+      x3 = str(0)
+      x2 = str(x)[0]
+      x1 = str(x)[1]
+      x0 = str(x)[2]
+    elif (x >= 10):
+      x3 = str(0)
+      x2 = str(0)
+      x1 = str(x)[0]
+      x0 = str(x)[1]
+    else:
+      x3 = str(0)
+      x2 = str(0)
+      x1 = str(0)
+      x0 = str(x)
+    if (y >= 100):
+      y3 = str(0)
+      y2 = str(y)[0]
+      y1 = str(y)[1]
+      y0 = str(y)[2]
+    elif (y >= 10):
+      y3 = str(0)
+      y2 = str(0)
+      y1 = str(y)[0]
+      y0 = str(y)[1]
+    else:
+      y3 = str(0)
+      y2 = str(0)
+      y1 = str(0)
+      y0 = str(y)
+    l1 = loc(str(x3), str(x2), str(x1), str(x0), \
+             str(y3), str(y2), str(y1), str(y0), \
+             str(servo_num))
+    this_locations.append(l1)
+  return this_locations
+
 # since i pass in a 100x100 drawing
 # i want to output a 200x200 drawing because it's larger
 # and our x-y positioning is very precise and small
@@ -422,6 +487,8 @@ def send_points(locs):
   global ser
   num_points = len(locs)
   num = 0
+  sys.stdout.write("starting to send points...")
+  sys.stdout.flush()
   ser.write(str(1))
   ser.read(1)
   # get num to write
@@ -506,6 +573,7 @@ def send_to_serial():
 
 def draw(data_string, height, width):
   # line drawing
+  global locations
   black_points = get_points(data_string, 1)
   red_points = get_points(data_string, 2)
   green_points = get_points(data_string, 3)
@@ -538,9 +606,25 @@ def draw(data_string, height, width):
   while (len(locations) > 500):
     curr_loc = split_locations()
     send_points(curr_loc)
+  make_servo_zero(locations[0])
   send_points(locations)
   return
 
+def draw2(data_string, height, width):
+# line drawing
+  points = get_points2(data_string)
+  locs = create_array_of_points_line2(points, height, width)
+  locs = add_jumps(locs)
+  locations = locs
+  print_locations(locations)
+  sys.stdout.write("starting serial...")
+  sys.stdout.flush()
+  init_serial()
+  while (len(locations) > 500):
+    curr_loc = split_locations()
+    send_points(curr_loc)
+  send_points(locations)
+  return
 
 def image_test(height, width):
   img = np.zeros((height, width, 3), dtype=np.uint8)
