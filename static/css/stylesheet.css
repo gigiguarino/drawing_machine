@@ -111,25 +111,40 @@
   outline: none;
   margin: 0px;
   background-color: #ffffff;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   pointer-events: auto;
+  border-style: solid;
+  border-color: #e5e5e5;
+  border-width: 0.5px;
 }
 
 #buttons {
   display: block;
   position: fixed;
   width: 200px;
-  height: 200px;
+  height: 800px;
   bottom: 30px;
   right: 35px;
   pointer-events: none;
+}
+
+p {
+  width: 190px;
+  font-family: monospace;
+  font-style: bold;
+  font-size: 12px;
+  position: fixed;
+  top: 30px;
+  text-align: right;
 }
 
 #clear {
   display: block;
   width: 190px;
   height: 70px;
+  position: fixed;
+  bottom: 100px;
   pointer-events: auto;
   border-style: solid;
   border-color: black;
@@ -160,10 +175,13 @@
   font-style: bold;
   font-size: 52px;
   text-align: center;
+  position: fixed;
+  bottom: 30px;
 }
 
 #send:hover {
   background-color: #8d8d8d;
 }
+
 
 

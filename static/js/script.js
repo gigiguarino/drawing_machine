@@ -3,6 +3,7 @@ var color;
 $(document).ready(function(){
   color = "white";
   $(".pixel").on("mousedown", start_paint);
+  $(".pixel").on("mousedown", paint);
   $("#clear").on("click", new_drawing);
   $("#send").on("click", send_array_values);
   $("#white_marker").on("click", function(){

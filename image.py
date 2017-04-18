@@ -167,6 +167,16 @@ def is_jump(x0, y0, x1, y1):
   else:
     return 1
 
+
+# removes the indices specified
+def remove_locs(locs, this_locations):
+  for l in locs:
+    for t in this_locations:
+      if (l == t):
+        this_locations.remove(t);
+        break
+  return this_locations
+
 # for jumps the servo needs to move up
 def make_servo_zero(l):
   global locations
@@ -193,7 +203,11 @@ def equal_x_y(loc1, loc2):
   else:
     return 0
 
+
+
 # adds the dot jump locations to the array
+# if the dot locations are vertically in line with eachother
+# then they are a vertical line
 def add_dot_jumps(dot_locations, this_locations):
   for d in dot_locations:
     d = loc(d.x3, d.x2, d.x1, d.x0, d.y3, d.y2, d.y1, d.y0, 0)
@@ -262,15 +276,6 @@ def is_diagonal(curr_x, curr_y, next_x, next_y, prev_x, prev_y):
       return 0
   else:
     return 0
-
-# removes the indices specified
-def remove_locs(locs, this_locations):
-  for l in locs:
-    for t in this_locations:
-      if (l == t):
-        this_locations.remove(t);
-        break
-  return this_locations
 
 # removes lines and diagonals so they use less movements
 def remove_unnecessary_moves(this_locations):
@@ -342,6 +347,7 @@ def create_array_of_points_line(plot_points, height, width, servo_num):
     points = make_one_array(lines)
   else:
     points = lines[0]
+  points = plot_points  #######################
   # add to locations list
   for l in range(0, len(points)):
     x = int(points[l][0])
@@ -525,16 +531,85 @@ def draw(data_string, height, width):
     blue_loc = add_jumps(blue_loc)
     blue_loc = remove_unnecessary_moves(blue_loc)
   combine_locations(black_loc, red_loc, green_loc, blue_loc)
-  make_locations_bigger()
   print_locations(locations)
   sys.stdout.write("starting serial...")
   sys.stdout.flush()
-  #init_serial()
+  init_serial()
   while (len(locations) > 500):
     curr_loc = split_locations()
-    #send_points(curr_loc)
-  #send_points(locations)
+    send_points(curr_loc)
+  send_points(locations)
   return
+
+
+def image_test(height, width):
+  img = np.zeros((height, width, 3), dtype=np.uint8)
+  for y in range(img.shape[0]):
+      for x in range(img.shape[1]):
+        if (y == 10 and x == 20):
+          img[y][x][0] = 255;
+          img[y][x][1] = 255;
+          img[y][x][2] = 255;
+        elif (y == 20 and x == 10):
+          img[y][x][0] = 255;
+          img[y][x][1] = 0;
+          img[y][x][2] = 0;
+        else:
+          img[y][x][0] = 0;
+          img[y][x][0] = 0;
+          img[y][x][0] = 0;
+  misc.imsave("test.png", img);
+
+
+def create_image(data, height, width):
+  img = np.zeros((height, width, 3), dtype=np.uint8)
+  for y in range(img.shape[0]):
+    for x in range(img.shape[1]):
+      img[y][x][0] = 255;
+      img[y][x][1] = 255;
+      img[y][x][2] = 255;
+  lines = data.splitlines()
+  for line in lines:
+    current_points = line.split()
+    current_x = int(current_points[0])
+    current_y = int(current_points[1])
+    current_servo = int(current_points[2])
+    for y in range(img.shape[0]):
+      for x in range(img.shape[1]):
+        if (y == current_y and x == current_x):
+            if (current_servo == 1):
+              img[y][x][0] = 0;
+              img[y][x][1] = 0;
+              img[y][x][2] = 0;
+            if (current_servo == 2):
+              img[y][x][0] = 255;
+              img[y][x][1] = 0;
+              img[y][x][2] = 0;
+            if (current_servo == 3):
+              img[y][x][0] = 0;
+              img[y][x][1] = 255;
+              img[y][x][2] = 0;
+            if (current_servo == 4):
+              img[y][x][0] = 0;
+              img[y][x][1] = 0;
+              img[y][x][2] = 255;
+  return img
+
+
+def get_new_data(img):
+  new_data = ""
+  for y in range(img.shape[0]):
+    for x in range(img.shape[1]):
+      if (not(img[y][x][0] == 255 and img[y][x][1] == 255 and img[y][x][2] == 255)):
+        if (img[y][x][0] == img[y][x][1] and img[y][x][1] == img[y][x][2]):
+          new_data += str(x) + " " + str(y) + " " + str(1) + "\n"
+        elif (img[y][x][1] < img[y][x][0] and img[y][x][2] < img[y][x][0]):
+          new_data += str(x) + " " + str(y) + " " + str(2) + "\n"
+        elif (img[y][x][0] < img[y][x][1] and img[y][x][2] < img[y][x][1]):
+          new_data += str(x) + " " + str(y) + " " + str(3) + "\n"
+        elif (img[y][x][0] < img[y][x][2] and img[y][x][1] < img[y][x][2]):
+          new_data += str(x) + " " + str(y) + " " + str(4) + "\n"
+  return new_data
 
 
 
@@ -549,13 +624,13 @@ def start():
   sys.stdout.write("inside python...")
   sys.stdout.flush()
   data = request.get_data()
-  #sys.stdout.write(data)
-  #sys.stdout.flush()
-  height = 100
-  width = 100
+  img = create_image(data, 100, 100)
+  img = misc.imresize(img, 200, 'nearest')
+  misc.imsave("resized_img.png", img)
+  data = get_new_data(img)
   sys.stdout.write("starting image processing...")
   sys.stdout.flush()
-  draw(data, height, width)
+  draw(data, 200, 200)
   return "done"
 
 
